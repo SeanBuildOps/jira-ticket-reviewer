@@ -67,7 +67,7 @@ Edit `config/expertise.json`:
 
 ### 3. Populate Cache
 
-Get your epic tickets and save to `cache/epic_tickets.json`:
+If running as Claude skill, skip manual population. Claude instructions should populate the cache on first run.
 
 **Option A: Using Claude Code with Atlassian MCP**
 
@@ -236,12 +236,7 @@ jira-ticket-recommender/
 
 ## Future Improvements
 
-- [ ] Auto-refresh cache via Atlassian API
-- [ ] Age-based scoring (older tickets = higher priority)
-- [ ] Dependency scoring (blocking tickets = higher priority)
-- [ ] Machine learning from assignment history
-- [ ] Multi-epic support
-- [ ] Web UI dashboard
+Integrate Entrepret's knowledge graph to power the scoring system with business metrics (churn, ARR, company size)
 
 ## Contributing
 
