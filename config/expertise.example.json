@@ -1,0 +1,19 @@
+{
+  "domains": {
+    "Feature A": ["feature a", "component x", "module y"],
+    "Feature B": ["feature b", "service z", "api endpoint"],
+    "Database": ["database", "migration", "schema", "sql"],
+    "Frontend": ["ui", "react", "component", "css", "styling"],
+    "Backend": ["api", "backend", "server", "endpoint"],
+    "Testing": ["test", "unit test", "integration test", "e2e"],
+    "Performance": ["performance", "optimization", "slow", "latency"],
+    "Security": ["security", "authentication", "authorization", "vulnerability"]
+  },
+  "default_epic": "PROJ-1234",
+  "user_account_id": "YOUR_ATLASSIAN_ACCOUNT_ID",
+  "cloud_id": "YOUR_CLOUD_ID",
+  "cache_ttl_hours": {
+    "epic_tickets": 1,
+    "user_history": 24
+  }
+}
