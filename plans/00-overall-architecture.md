@@ -71,7 +71,7 @@ return sorted list[TicketScore]
 |---|---|
 | Plugin isolation | `try/except` per plugin. Crash = null result + warning log |
 | Graceful degradation | Null results excluded from weighted aggregation |
-| Config validation | `ConfigError` raised at engine init on bad config — not mid-run |
+| Config validation | `ConfigError` raised at engine init for: unknown plugin name, missing abstract methods (`score`, `description`), wrong return types, or `weight <= 0`. Never fails mid-run. |
 | Contract enforcement | `normalized_score` clamped to `[0.0, 1.0]` if out of range |
 | Plugin timeouts | `timeout_seconds` per plugin in YAML. Exceeded = null result |
 | Structured logging | `DEBUG`: plugin name, raw value, score, weight. `WARNING`: errors |
