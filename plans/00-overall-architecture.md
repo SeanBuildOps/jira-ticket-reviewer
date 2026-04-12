@@ -34,11 +34,35 @@ A general-purpose, plugin-driven scoring engine exposed as an MCP server. The fi
 ## Core Design Principles
 
 - **Microkernel**: The engine only aggregates. All scoring logic is in plugins.
+- **Shared common data via `Ticket` dataclass**: Raw Jira JSON is normalized to a `Ticket` once before any plugin runs. All plugins receive the same instance — no plugin re-fetches base fields (`key`, `summary`, `status`, `priority`, `assignee`, `created`, `updated`, `labels`).
+- **Session cache for extended data**: One in-memory cache per `score_tickets()` call, shared across all plugins and all tickets. First plugin to request changelog/comments/worklogs fetches from Jira; every subsequent plugin gets it free from cache.
 - **Jira-first**: Plugins access Jira through a controlled `PluginContext` — no raw API clients.
 - **Capability model**: Each plugin declares a whitelist of Jira operations in `scorer.yaml`. Undeclared operations raise `CapabilityError`.
-- **Session cache**: All plugins share a single in-memory cache per `score_tickets()` call. First plugin to request a Jira resource fetches it; subsequent plugins get the cached result.
 - **Graceful degradation**: Plugin failures return a null result and are excluded from aggregation — they never crash the engine.
 - **Normalized scores**: Every plugin outputs a `0.0–1.0` float. The engine computes a weighted mean.
+
+## Data Flow
+
+```
+MCP tool receives raw Jira JSON list
+        ↓
+normalize_ticket() → Ticket dataclass (once per ticket, shared by all plugins)
+        ↓
+ScoringEngine.score_tickets(tickets)
+  creates one session_cache = {}
+        ↓
+  for each plugin:
+    PluginContext(allowed=plugin.capabilities, cache=session_cache)
+    plugin.score(ticket, context)
+      → base fields: free (already in Ticket)
+      → extended (changelog etc.): context.get_changelog(key)
+           → cache hit?  return cached value
+           → cache miss? fetch Jira, store, return
+        ↓
+  _aggregate(plugin_results) → combined_score
+        ↓
+return sorted list[TicketScore]
+```
 
 ## Non-Functional Requirements
 
