@@ -33,7 +33,7 @@ class ScoringEngine:
         logger.debug("ScoringEngine initialised with %d plugin(s)", len(self._plugins))
 
     @property
-    def plugins(self) -> list:
+    def plugins(self) -> list["ScoringPlugin"]:
         """Return a copy of the loaded plugin instances."""
         return list(self._plugins)
 

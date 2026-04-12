@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 
 from jira_reviewer.tools._helpers import get_engine, make_ticket

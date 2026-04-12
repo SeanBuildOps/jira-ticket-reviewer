@@ -21,6 +21,12 @@ class TimeToCompletionPlugin:
 
     def __init__(self, config: dict) -> None:
         self._config = config
+        self._ideal_hours: float = config.get("ideal_hours", 4.0)
+        self._max_hours: float = config.get("max_hours", 24.0)
+        if self._max_hours <= self._ideal_hours:
+            raise ValueError(
+                f"time_to_completion: max_hours ({self._max_hours}) must be greater than ideal_hours ({self._ideal_hours})"
+            )
 
     @property
     def weight(self) -> float:
@@ -54,16 +60,21 @@ class TimeToCompletionPlugin:
         done_time: datetime | None = None
 
         for entry in changelog:
-            created_str = entry.get("created", "")
             items = entry.get("items", [])
             for item in items:
                 if item.get("field") != "status":
                     continue
                 to_string = item.get("toString", "")
                 if to_string == "In Progress" and in_progress_time is None:
-                    in_progress_time = _parse_timestamp(created_str)
+                    try:
+                        in_progress_time = _parse_timestamp(entry["created"])
+                    except (ValueError, TypeError, KeyError):
+                        continue  # skip malformed changelog entries
                 elif to_string == "Done" and done_time is None:
-                    done_time = _parse_timestamp(created_str)
+                    try:
+                        done_time = _parse_timestamp(entry["created"])
+                    except (ValueError, TypeError, KeyError):
+                        continue  # skip malformed changelog entries
 
         if in_progress_time is None:
             return PluginResult(
