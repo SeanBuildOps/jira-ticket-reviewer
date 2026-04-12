@@ -97,6 +97,11 @@ class ScoringEngine:
 
         contribution = (normalized_score * weight) / total_weight
         Returns 0.0 if no results.
+
+        Design note (deviation from plan): the plan specifies returning tuple[float, dict] with
+        contributions. Instead, this method mutates PluginResult.contribution directly as a
+        side effect and returns only the combined float. This avoids reconstructing the dict and
+        is simpler since PluginResult is mutable. See CHANGELOG.txt for full rationale.
         """
         if not results:
             return 0.0
@@ -165,6 +170,6 @@ class ScoringEngine:
         # Validate weight type and value
         weight = getattr(instance, "weight")
         if not isinstance(weight, (int, float)):
-            raise ConfigError(f"{name}.weight must be a positive float")
+            raise ConfigError(f"{name}.weight must be float")
         if float(weight) <= 0:
-            raise ConfigError(f"{name}.weight must be a positive float")
+            raise ConfigError(f"{name}.weight must be > 0")
