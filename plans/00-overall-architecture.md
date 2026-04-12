@@ -103,3 +103,4 @@ See `plans/01-cleanup.md`, `plans/02-microkernel-core.md`, `plans/03-plugins.md`
 | Improvement | When to revisit |
 |---|---|
 | **Parallel plugin execution** | `ThreadPoolExecutor` + `asyncio.gather()` — when plugin count or ticket volume makes sequential execution a measurable bottleneck. Plugins stay synchronous; engine owns concurrency. Requires per-key `threading.Lock` on session cache. |
+| **Reporting** | Generate structured reports from `list[TicketScore]` — per-agent summaries, trend over time, plugin contribution breakdowns across a sprint. All data is already in `TicketScore.plugin_results`. Format options: Markdown, JSON, HTML. Could be a `report_tickets` MCP tool or a separate reporting module. |
