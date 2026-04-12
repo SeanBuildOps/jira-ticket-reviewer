@@ -1,0 +1,8 @@
+CHANGELOG — Jira Ticket Reviewer
+=================================
+Tracks deviations from the implementation plan during execution.
+
+Format: [DATE] [PHASE] DEVIATION — REASON
+
+---------------------------------
+(no deviations recorded yet)
