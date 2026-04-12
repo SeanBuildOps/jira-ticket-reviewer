@@ -1,5 +1,15 @@
+# Secrets and local config
+.env
+config/scorer.yaml
+
 # Cache files
 cache/*.json
+
+# uv / Python packaging
+.venv/
+dist/
+*.egg-info/
+uv.lock
 
 # Python
 __pycache__/

@@ -5,4 +5,13 @@ Tracks deviations from the implementation plan during execution.
 Format: [DATE] [PHASE] DEVIATION — REASON
 
 ---------------------------------
-(no deviations recorded yet)
+[2026-04-12] [PHASE 2] DEVIATION — pyproject.toml project name changed from "jira-reviewer-mcp" to "jira-reviewer".
+  REASON: uv_build derives the expected Python module name from the project name (hyphen→underscore).
+  "jira-reviewer-mcp" would require a src/jira_reviewer_mcp/ module; our source package is jira_reviewer.
+  The entry-point script name "jira-reviewer-mcp" is unchanged — only the [project].name metadata differs.
+
+[2026-04-12] [PHASE 2] DEVIATION — Removed final isinstance(instance, ScoringPlugin) gate in _validate_plugin.
+  REASON: ScoringPlugin Protocol declares version and author as required for isinstance() to return True,
+  but the plan designates these as optional (engine defaults to "0.0.0"/"unknown" when absent).
+  The granular required-attr checks (name, description, weight, score) remain and raise precise ConfigErrors.
+  The isinstance check has been removed to avoid false rejections of valid plugins missing only optional attrs.

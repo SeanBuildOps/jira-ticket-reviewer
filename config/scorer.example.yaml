@@ -1,0 +1,5 @@
+plugins:
+  - name: example_plugin
+    enabled: false
+    weight: 1.0
+    config: {}
