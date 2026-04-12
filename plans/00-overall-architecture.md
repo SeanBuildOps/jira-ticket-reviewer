@@ -72,7 +72,7 @@ return sorted list[TicketScore]
 | Plugin isolation | `try/except` per plugin. Crash = null result + warning log |
 | Graceful degradation | Null results excluded from weighted aggregation |
 | Config validation | `ConfigError` raised at engine init for: unknown plugin name, protocol not satisfied (`score`/`description` missing), wrong return types, or `weight <= 0`. Never fails mid-run. |
-| Plugin interface | `ScoringPlugin` is a `typing.Protocol` — no inheritance required. Plugins satisfy it by implementing the required properties and method. Zero coupling to this package. |
+| Plugin interface | `ScoringPlugin` is a `typing.Protocol` — no inheritance required. Required: `name`, `description`, `weight`, `score`. Optional: `version` (default `"0.0.0"`) and `author` (default `"unknown"`) — engine supplies defaults if absent. |
 | Contract enforcement | `normalized_score` clamped to `[0.0, 1.0]` if out of range |
 | Plugin timeouts | `timeout_seconds` per plugin in YAML. Exceeded = null result |
 | Structured logging | `DEBUG`: plugin name, raw value, score, weight. `WARNING`: errors |
