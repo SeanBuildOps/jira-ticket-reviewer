@@ -36,8 +36,7 @@ A general-purpose, plugin-driven scoring engine exposed as an MCP server. The fi
 - **Microkernel**: The engine only aggregates. All scoring logic is in plugins.
 - **Slim `Ticket` as identity anchor**: `Ticket` holds only `key` and `status` — just enough to guarantee all plugins operate on the same ticket and that the engine can gate on "Done" before scoring. Nothing else is pre-fetched.
 - **Session cache for all data**: One in-memory cache per `score_tickets()` call, shared across all plugins and all tickets. First plugin to request any Jira data (issue fields, changelog, comments) fetches it; every subsequent plugin gets it free from cache.
-- **Jira-first**: Plugins access Jira through a controlled `PluginContext` — no raw API clients.
-- **Capability model**: Each plugin declares a whitelist of Jira operations in `scorer.yaml`. Undeclared operations raise `CapabilityError`.
+- **Controlled Jira access via `PluginContext`**: Plugins never receive raw API clients. `PluginContext` exposes a fixed set of read-only methods — that interface boundary is sufficient control. No per-plugin whitelist needed.
 - **Graceful degradation**: Plugin failures return a null result and are excluded from aggregation — they never crash the engine.
 - **Normalized scores**: Every plugin outputs a `0.0–1.0` float. The engine computes a weighted mean.
 
@@ -77,7 +76,7 @@ return sorted list[TicketScore]
 | Plugin timeouts | `timeout_seconds` per plugin in YAML. Exceeded = null result |
 | Structured logging | `DEBUG`: plugin name, raw value, score, weight. `WARNING`: errors |
 | No side effects | Plugins are read-only. Mutations raise `PluginSideEffectError` |
-| Jira-first capability model | `PluginContext` gates all data access. Only declared capabilities exposed |
+| Controlled Jira access | `PluginContext` is the only Jira interface plugins see. The interface itself is the boundary — no per-plugin whitelist |
 
 ## Branching Strategy
 
