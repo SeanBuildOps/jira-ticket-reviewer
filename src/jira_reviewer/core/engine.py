@@ -32,6 +32,11 @@ class ScoringEngine:
         self._plugins: list[ScoringPlugin] = self._load_plugins(config)
         logger.debug("ScoringEngine initialised with %d plugin(s)", len(self._plugins))
 
+    @property
+    def plugins(self) -> list:
+        """Return a copy of the loaded plugin instances."""
+        return list(self._plugins)
+
     def score_tickets(self, tickets: list[Ticket]) -> list[TicketScore]:
         """Score a list of tickets. Returns results sorted descending by combined_score.
 

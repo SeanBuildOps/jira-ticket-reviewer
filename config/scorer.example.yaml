@@ -3,3 +3,10 @@ plugins:
     enabled: false
     weight: 1.0
     config: {}
+
+  - name: time_to_completion
+    enabled: true
+    weight: 1.0
+    config:
+      ideal_hours: 4.0
+      max_hours: 24.0

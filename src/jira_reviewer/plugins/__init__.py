@@ -7,8 +7,9 @@ To register a new plugin:
 
 from jira_reviewer.core.plugin import ScoringPlugin
 from jira_reviewer.plugins.example import ExamplePlugin
+from jira_reviewer.plugins.time_to_completion import TimeToCompletionPlugin
 
 PLUGIN_REGISTRY: dict[str, type[ScoringPlugin]] = {
     "example_plugin": ExamplePlugin,
-    # new plugins registered here
+    "time_to_completion": TimeToCompletionPlugin,
 }

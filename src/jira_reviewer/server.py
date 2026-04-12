@@ -22,7 +22,7 @@ def list_plugins() -> str:
     Lists only enabled plugins (those loaded by the engine from scorer.yaml).
     """
     engine = get_engine()
-    plugins = engine._plugins
+    plugins = engine.plugins
 
     if not plugins:
         return "No plugins configured. Edit config/scorer.yaml to enable plugins."

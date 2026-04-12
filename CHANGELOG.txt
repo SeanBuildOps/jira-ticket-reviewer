@@ -17,3 +17,9 @@ Format: [DATE] [PHASE] DEVIATION — REASON
   The isinstance check has been removed to avoid false rejections of valid plugins missing only optional attrs.
 
 [2026-04-12] [PHASE 2] DEVIATION — _aggregate returns float instead of tuple[float, dict]. Side-effect mutation of PluginResult.contribution chosen instead — avoids reconstructing the dict and is simpler since PluginResult is mutable. Functionally equivalent.
+
+[2026-04-12] [PHASE 3] DEVIATION — server.py tool bodies were already implemented in Phase 2 (list_plugins, score_tickets). Phase 3 created the backing tool modules (tools/list_plugins.py, tools/score_tickets.py) and updated server.py to use the public engine.plugins property instead of engine._plugins. No net logic change to server.py.
+
+[2026-04-12] [PHASE 3] DEVIATION — plans/03-plugins.md names the branch "phase/3-tools"; task spec names it "phase/3-time-to-completion". Used "phase/3-time-to-completion" per task spec (more descriptive and scoped to the single plugin being implemented).
+
+[2026-04-12] [PHASE 3] DEVIATION — Null/skipped PluginResult uses normalized_score=0.0 and metadata={"skipped": True, "reason": "..."} as directed by task spec, rather than returning Python None (which the engine would exclude entirely). This means skipped plugins still contribute 0.0 to the weighted aggregate — callers can detect skips via metadata["skipped"].
