@@ -1,9 +1,6 @@
 # Cache files
 cache/*.json
 
-# Local configuration
-config/expertise.json
-
 # Python
 __pycache__/
 *.py[cod]
