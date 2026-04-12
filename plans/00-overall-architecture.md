@@ -34,8 +34,8 @@ A general-purpose, plugin-driven scoring engine exposed as an MCP server. The fi
 ## Core Design Principles
 
 - **Microkernel**: The engine only aggregates. All scoring logic is in plugins.
-- **Shared common data via `Ticket` dataclass**: Raw Jira JSON is normalized to a `Ticket` once before any plugin runs. All plugins receive the same instance — no plugin re-fetches base fields (`key`, `summary`, `status`, `priority`, `assignee`, `created`, `updated`, `labels`).
-- **Session cache for extended data**: One in-memory cache per `score_tickets()` call, shared across all plugins and all tickets. First plugin to request changelog/comments/worklogs fetches from Jira; every subsequent plugin gets it free from cache.
+- **Slim `Ticket` as identity anchor**: `Ticket` holds only `key` and `status` — just enough to guarantee all plugins operate on the same ticket and that the engine can gate on "Done" before scoring. Nothing else is pre-fetched.
+- **Session cache for all data**: One in-memory cache per `score_tickets()` call, shared across all plugins and all tickets. First plugin to request any Jira data (issue fields, changelog, comments) fetches it; every subsequent plugin gets it free from cache.
 - **Jira-first**: Plugins access Jira through a controlled `PluginContext` — no raw API clients.
 - **Capability model**: Each plugin declares a whitelist of Jira operations in `scorer.yaml`. Undeclared operations raise `CapabilityError`.
 - **Graceful degradation**: Plugin failures return a null result and are excluded from aggregation — they never crash the engine.
@@ -46,18 +46,20 @@ A general-purpose, plugin-driven scoring engine exposed as an MCP server. The fi
 ```
 MCP tool receives raw Jira JSON list
         ↓
-normalize_ticket() → Ticket dataclass (once per ticket, shared by all plugins)
+make_ticket(issue) → Ticket(key, status)   # identity only — thin extraction
+        ↓
+engine.assert status == "Done"             # gate before any plugin runs
         ↓
 ScoringEngine.score_tickets(tickets)
-  creates one session_cache = {}
+  creates one session_cache = {}           # shared across all plugins + tickets
         ↓
   for each plugin:
     PluginContext(allowed=plugin.capabilities, cache=session_cache)
     plugin.score(ticket, context)
-      → base fields: free (already in Ticket)
-      → extended (changelog etc.): context.get_changelog(key)
-           → cache hit?  return cached value
-           → cache miss? fetch Jira, store, return
+      → ticket.key / ticket.status: free (already in Ticket)
+      → anything else: context.get_issue(key) / get_changelog(key) / ...
+           → cache hit?  return cached value (zero cost)
+           → cache miss? fetch Jira, store in cache, return
         ↓
   _aggregate(plugin_results) → combined_score
         ↓
