@@ -98,3 +98,9 @@ Each phase branch is reviewed and user-approved before merging to `main`.
 | 3 | `phase/3-tools` | Plugin implementations (future) |
 
 See `plans/01-cleanup.md`, `plans/02-microkernel-core.md`, `plans/03-plugins.md` for phase detail.
+
+## Future Improvements
+
+| Improvement | When to revisit |
+|---|---|
+| **Parallel plugin execution** | `ThreadPoolExecutor` + `asyncio.gather()` — when plugin count or ticket volume makes sequential execution a measurable bottleneck. Plugins stay synchronous; engine owns concurrency. Requires per-key `threading.Lock` on session cache. |
