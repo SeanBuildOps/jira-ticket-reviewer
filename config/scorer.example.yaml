@@ -19,6 +19,12 @@ plugins:
       # Jira Cloud default story points field. Override if your instance differs.
       story_points_field: customfield_10023
 
+      # Statuses whose duration is excluded from active time.
+      # Time spent in these states does not count against the score.
+      excluded_statuses:
+        - In Review
+        - Blocked
+
       # Per-SP thresholds derived from the Fibonacci story point cheat sheet:
       #   1 SP  — less than 2 hours
       #   2 SP  — half a day
