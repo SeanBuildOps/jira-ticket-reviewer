@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
 
 _engine: "ScoringEngine | None" = None
 
-# Project root is four levels up from this file:
-# src/jira_reviewer/tools/_helpers.py -> tools -> jira_reviewer -> src -> project root
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+# Project root is three levels up from this file:
+# src/jira_reviewer/tools/_helpers.py -> tools/ -> jira_reviewer/ -> src/ -> project root
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _CONFIG_DIR = _PROJECT_ROOT / "config"
 
 
