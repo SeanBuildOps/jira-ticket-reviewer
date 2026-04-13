@@ -50,6 +50,29 @@ def load_config() -> dict:
     return {"plugins": []}
 
 
+def _build_jira_client():
+    """Build a JiraClient from environment variables, or return None if not configured.
+
+    Reads JIRA_URL, JIRA_USERNAME, JIRA_API_TOKEN from the environment.
+    Returns None (with a warning) if any variable is missing.
+    """
+    import os
+
+    from jira_reviewer.core.jira_client import JiraClient
+
+    url = os.environ.get("JIRA_URL", "").strip()
+    username = os.environ.get("JIRA_USERNAME", "").strip()
+    token = os.environ.get("JIRA_API_TOKEN", "").strip()
+
+    if not url or not username or not token:
+        missing = [k for k, v in [("JIRA_URL", url), ("JIRA_USERNAME", username), ("JIRA_API_TOKEN", token)] if not v]
+        logger.warning("Jira client not configured — missing env vars: %s. Plugins that fetch Jira data will skip.", missing)
+        return None
+
+    logger.debug("Jira client configured for %s", url)
+    return JiraClient(base_url=url, username=username, api_token=token)
+
+
 def get_engine() -> "ScoringEngine":
     """Return the singleton ScoringEngine, instantiating it on first call."""
     global _engine
@@ -57,7 +80,8 @@ def get_engine() -> "ScoringEngine":
         from jira_reviewer.core.engine import ScoringEngine
 
         config = load_config()
-        _engine = ScoringEngine(config)
+        jira_client = _build_jira_client()
+        _engine = ScoringEngine(config, jira_client=jira_client)
     return _engine
 
 

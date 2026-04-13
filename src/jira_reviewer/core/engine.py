@@ -26,9 +26,9 @@ class ScoringEngine:
     ConfigError — only plugin runtime errors, which are caught and logged.
     """
 
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: dict, jira_client: object | None = None) -> None:
         self._config = config
-        self._jira = None  # Phase 2: no real Jira client yet
+        self._jira = jira_client
         self._plugins: list[ScoringPlugin] = self._load_plugins(config)
         logger.debug("ScoringEngine initialised with %d plugin(s)", len(self._plugins))
 
