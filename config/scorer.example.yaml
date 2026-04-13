@@ -8,5 +8,11 @@ plugins:
     enabled: true
     weight: 1.0
     config:
+      # Base thresholds. When scale_by_story_points is true these become
+      # per-story-point values: a 3-SP ticket gets ideal=12h, max=72h.
       ideal_hours: 4.0
       max_hours: 24.0
+      # Multiply thresholds by story points so larger tickets get more budget.
+      scale_by_story_points: true
+      # Jira field ID for story points. Jira Cloud default is customfield_10023.
+      story_points_field: customfield_10023
