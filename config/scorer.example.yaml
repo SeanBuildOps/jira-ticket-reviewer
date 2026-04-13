@@ -8,11 +8,28 @@ plugins:
     enabled: true
     weight: 1.0
     config:
-      # Base thresholds. When scale_by_story_points is true these become
-      # per-story-point values: a 3-SP ticket gets ideal=12h, max=72h.
+      # Fallback thresholds when story points are unavailable.
       ideal_hours: 4.0
       max_hours: 24.0
-      # Multiply thresholds by story points so larger tickets get more budget.
+
+      # When true, ideal/max hours are looked up from story_points_thresholds
+      # using the ticket's story point value instead of the flat values above.
       scale_by_story_points: true
-      # Jira field ID for story points. Jira Cloud default is customfield_10023.
+
+      # Jira Cloud default story points field. Override if your instance differs.
       story_points_field: customfield_10023
+
+      # Per-SP thresholds derived from the Fibonacci story point cheat sheet:
+      #   1 SP  — less than 2 hours
+      #   2 SP  — half a day
+      #   3 SP  — up to two days
+      #   5 SP  — few days
+      #   8 SP  — around a week  (should be split into smaller items)
+      #  13 SP  — more than a week (must be split into smaller items)
+      story_points_thresholds:
+        1:  { ideal_hours: 1,  max_hours: 2  }
+        2:  { ideal_hours: 4,  max_hours: 8  }
+        3:  { ideal_hours: 8,  max_hours: 16 }
+        5:  { ideal_hours: 16, max_hours: 32 }
+        8:  { ideal_hours: 32, max_hours: 40 }
+        13: { ideal_hours: 40, max_hours: 80 }
