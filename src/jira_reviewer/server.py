@@ -23,9 +23,9 @@ def list_plugins() -> str:
 
 # ── Tool: score_tickets ───────────────────────────────────────────────────────
 @mcp.tool()
-def score_tickets(tickets: list[dict]) -> str:
-    """Score completed Jira tickets. Each dict needs 'key' and 'fields.status.name'."""
-    return _score_tickets(tickets)
+def score_tickets(ticket_keys: list[str]) -> str:
+    """Score completed Jira tickets by key. Example: ["LE-1288", "LE-1290"]"""
+    return _score_tickets(ticket_keys)
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
